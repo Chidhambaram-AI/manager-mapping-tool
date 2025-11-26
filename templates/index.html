@@ -16,87 +16,27 @@
     :root {
       --bg-light: linear-gradient(135deg, #eef2f7, #e3e9f2);
       --bg-dark: #0d1117;
-
       --card-light: #ffffffcc;
       --card-dark: #161b22cc;
-
       --text-light: #1f2d3d;
       --text-dark: #dde1e8;
-
       --muted-light: #6c7a90;
       --muted-dark: #94a3b8;
-
       --list-light: #dde3ec;
       --list-dark: #2a3038;
     }
-
-    html,body {
-      height:100%;
-      font-family: 'Inter', sans-serif;
-    }
-
-    body {
-      background: var(--bg-light);
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      transition: background .25s ease;
-      margin: 0;
-    }
-
-    .card-modern {
-      background: var(--card-light);
-      backdrop-filter: blur(8px);
-      border-radius: 16px;
-      padding: 28px;
-      box-shadow: 0 12px 40px rgba(24,35,51,0.10);
-      transition: all .25s ease;
-      margin: 24px auto;
-    }
-
-    .logo-wrap {
-      text-align: center;
-      margin-bottom: 12px;
-    }
-
-    .logo-wrap img {
-      max-width: 180px;
-      height: auto;
-      display:inline-block;
-    }
-
+    html,body { height:100%; font-family:'Inter',sans-serif; margin:0; }
+    body { background: var(--bg-light); transition:background .25s ease; }
+    .card-modern { background: var(--card-light); backdrop-filter: blur(8px); border-radius: 16px; padding: 28px; box-shadow: 0 12px 40px rgba(24,35,51,0.10); transition: all .25s ease; margin: 24px auto; }
+    .logo-wrap { text-align:center; margin-bottom:12px; }
+    .logo-wrap img { max-width:180px; height:auto; display:inline-block; }
     h3 { font-weight:700; color:var(--text-light); margin-bottom:6px; }
     .text-muted-custom { color:var(--muted-light) !important; }
-
-    .btn-primary {
-      background: linear-gradient(90deg,#2e6bff,#1aa1ff);
-      border: none;
-      font-weight: 700;
-      padding: 12px;
-      border-radius: 12px;
-    }
-
-    .btn-outline {
-      border-radius: 10px;
-      font-weight: 700;
-      padding: 10px 14px;
-    }
-
-    .list-group-item {
-      border-radius: 8px;
-      margin-bottom: 8px;
-      border: 1px solid var(--list-light);
-      background: transparent;
-    }
-
+    .btn-primary { background: linear-gradient(90deg,#2e6bff,#1aa1ff); border:none; font-weight:700; padding:12px; border-radius:12px; }
+    .btn-outline { border-radius:10px; font-weight:700; padding:10px 14px; }
+    .list-group-item { border-radius:8px; margin-bottom:8px; border:1px solid var(--list-light); background:transparent; }
     footer { text-align:center; margin-top:20px; color:var(--muted-light); font-size:.95rem; }
-
-    /* responsive */
-    @media (max-width: 576px) {
-      .card-modern { padding: 20px; margin: 12px; }
-      .logo-wrap img { max-width: 140px; }
-    }
-
-    /* dark mode */
+    @media (max-width:576px) { .card-modern { padding:20px; margin:12px; } .logo-wrap img { max-width:140px; } }
     @media (prefers-color-scheme: dark) {
       body { background: var(--bg-dark); }
       .card-modern { background: var(--card-dark); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
@@ -105,9 +45,8 @@
       .list-group-item { border: 1px solid var(--list-dark); color: var(--text-dark); }
       footer { color: var(--muted-dark); }
     }
-
-    /* small helper */
     .gap-2 > a { text-align:center; padding:12px 14px; display:inline-block; }
+    .small-muted { color: #7a8697; font-size:0.95rem; }
   </style>
 </head>
 
@@ -123,9 +62,7 @@
       <!-- Title -->
       <div style="text-align:center">
         <h3>Manager Mapping</h3>
-        <p class="text-muted-custom" style="margin-bottom:18px;">
-          Upload your Excel file to generate the Manager Summary automatically.
-        </p>
+        <p class="text-muted-custom" style="margin-bottom:18px;">Upload your Excel file to generate the Manager Summary automatically.</p>
       </div>
 
       <!-- Template Buttons -->
@@ -144,9 +81,7 @@
           <input type="file" class="form-control" name="excel_file" accept=".xlsx,.xls" required>
         </div>
 
-        <button type="submit" class="btn btn-primary w-100">
-          Process & Download Excel
-        </button>
+        <button type="submit" class="btn btn-primary w-100">Process & Download Excel</button>
       </form>
 
       <hr style="margin:20px 0;">
@@ -170,18 +105,13 @@
       <ol class="text-muted-custom">
         <li>Read users and their reporting managers.</li>
         <li>Create a unique Manager list from Manager 1 &amp; Manager 2.</li>
-        <li>Identify Direct Managers (listed in M1/M2).</li>
-        <li>Identify Indirect Managers (higher-level reporting chain).</li>
-        <li>Generate a new sheet named <strong>Manager Summary</strong> with Manager / Usergroups / Type.</li>
-        <li>Return processed Excel for download (no storage).</li>
+        <li>For each manager, combine: own group (if present), direct reports groups, and (if applicable) RM2 inherits RM1's full tree groups.</li>
+        <li>Generate <strong>Manager Summary</strong> sheet with Manager / Usergroups / Type / Own / DirectCount / IndirectCount.</li>
       </ol>
 
-      <div style="height:6px"></div>
     </div>
 
-    <footer>
-      Manager Mapping • Auto Dark Mode • v1.0
-    </footer>
+    <footer>Manager Mapping • Auto Dark Mode • v1.0</footer>
   </div>
 
   <script>
@@ -191,9 +121,8 @@
       this.onerror = null;
       this.src = 'https://www.prohance.ai/assets/images/logo.png';
     };
-    // If user opens via file:// and /static path fails, fallback will try public PNG
-    // Note: to use download and process routes you must run the Flask app and open the page via http://127.0.0.1:5000/
   </script>
 </body>
 </html>
+
 
